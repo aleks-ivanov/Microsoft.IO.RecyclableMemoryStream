@@ -105,14 +105,14 @@ jobs:
           --include-source `
           --include-symbols `
           --no-build `
-          --output NuGet `
+          --output 'Build output' `
           -property:Version=1.2.3
 
       - name: Upload NuGet packages as pipeline artifact
         uses: actions/upload-artifact@v1
         with:
           name: NuGet packages
-          path: NuGet/
+          path: 'Build output/'
 
   cd:
     if: needs.ci.outputs.latest_version != ''
