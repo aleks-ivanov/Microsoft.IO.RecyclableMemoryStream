@@ -101,18 +101,20 @@ jobs:
       - name: Pack solution
         shell: pwsh
         run: |
+          msbuild Microsoft.IO.RecyclableMemoryStream.sln
+        
           dotnet pack Microsoft.IO.RecyclableMemoryStream.sln `
           --include-source `
           --include-symbols `
           --no-build `
-          --output 'Build output' `
+          --output NuGet `
           -property:Version=1.2.3
 
       - name: Upload NuGet packages as pipeline artifact
         uses: actions/upload-artifact@v1
         with:
           name: NuGet packages
-          path: 'Build output/'
+          path: NuGet/
 
   cd:
     if: needs.ci.outputs.latest_version != ''
