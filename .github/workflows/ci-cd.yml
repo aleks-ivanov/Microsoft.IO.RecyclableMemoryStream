@@ -9,11 +9,6 @@ jobs:
     outputs:
       latest_version: ${{ steps.tag_generator.outputs.new_version }}
     steps:
-      - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 5.0.203
-
       - name: Data gatherer
         id: data_gatherer
         shell: pwsh
@@ -50,6 +45,14 @@ jobs:
           Write-Output "::set-output name=is_push::$(echo $isPush)"
           Write-Output "::set-output name=is_push_to_default_branch::$(echo $isPushToDefaultBranch)"
 
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.203
+          
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
+
       - name: Checkout repository
         uses: actions/checkout@v2
 
@@ -62,23 +65,16 @@ jobs:
           default_bump: false
           release_branches: ${{ steps.data_gatherer.outputs.default_branch }}
 
-      - name: Clean solution and NuGet cache
-        shell: pwsh
-        run: |
-          dotnet clean Microsoft.IO.RecyclableMemoryStream.sln
-          dotnet nuget locals all --clear
-
       - name: Restore solution
         shell: pwsh
         run: |
-          dotnet restore Microsoft.IO.RecyclableMemoryStream.sln
+          nuget restore Microsoft.IO.RecyclableMemoryStream.sln
 
       - name: Build solution
         shell: pwsh
         run: |
-          dotnet build Microsoft.IO.RecyclableMemoryStream.sln `
-          --configuration Release `
-          --output 'Build output' `
+          msbuild Microsoft.IO.RecyclableMemoryStream.sln `
+          /p:OutputPath="${{ github.workspace }}/Build output" `
           --no-restore
 
       - name: Upload build output as pipeline artifact
@@ -91,9 +87,8 @@ jobs:
         shell: pwsh
         run: |
           dotnet test Microsoft.IO.RecyclableMemoryStream.sln `
-          --configuration Release `
-          --logger "trx;LogFileName=$fileBaseName.trx;verbosity=normal" `
           --output 'Build output' `
+          --logger "trx;LogFileName=$fileBaseName.trx;verbosity=normal" `
           --results-directory 'Test results/' `
           --no-build
 
