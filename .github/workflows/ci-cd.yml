@@ -75,7 +75,6 @@ jobs:
           $projectNewVersion = $gitNewVersion ?? $projectCurrentVersion
           
           dotnet build `
-          --configuration Release `
           --output 'Build output' `
           -property:Version=$projectNewVersion `
           --no-restore
@@ -94,7 +93,6 @@ jobs:
         shell: pwsh
         run: |
           dotnet test `
-          --configuration Release `
           --logger "trx;LogFileName=$fileBaseName.trx;verbosity=normal" `
           --results-directory 'Test results/' `
           --no-build
