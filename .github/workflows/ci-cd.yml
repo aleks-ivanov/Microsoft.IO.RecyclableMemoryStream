@@ -82,6 +82,7 @@ jobs:
           
           dotnet build Microsoft.IO.RecyclableMemoryStream.sln `
           --output 'Build output' `
+          -property:GITHUB_ACTIONS=true `
           -property:Version=$projectNewVersion `
           --no-restore
 
