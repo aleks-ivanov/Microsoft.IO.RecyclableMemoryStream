@@ -111,8 +111,7 @@ jobs:
           name: Test results
           path: 'Test results/'
 
-      - if: steps.tag_generator.outputs.new_version != ''
-        name: Upload NuGet packages as pipeline artifact
+      - name: Upload NuGet packages as pipeline artifact
         uses: actions/upload-artifact@v1
         with:
           name: NuGet packages
