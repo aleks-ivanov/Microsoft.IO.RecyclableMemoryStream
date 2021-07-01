@@ -62,10 +62,16 @@ jobs:
           default_bump: false
           release_branches: ${{ steps.data_gatherer.outputs.default_branch }}
 
+      - name: Fix GenerateDepsFile error
+        shell: pwsh
+        run: |
+          dotnet clean Microsoft.IO.RecyclableMemoryStream.sln
+          dotnet nuget locals all --clear
+
       - name: Restore solution
         shell: pwsh
         run: |
-          dotnet restore
+          dotnet restore Microsoft.IO.RecyclableMemoryStream.sln
 
       - name: Build solution
         shell: pwsh
@@ -74,7 +80,7 @@ jobs:
           $projectCurrentVersion = ([xml](Get-Content -Path src\Microsoft.IO.RecyclableMemoryStream.csproj)).Project.PropertyGroup.PackageVersion
           $projectNewVersion = $gitNewVersion ?? $projectCurrentVersion
           
-          dotnet build `
+          dotnet build Microsoft.IO.RecyclableMemoryStream.sln `
           --output 'Build output' `
           -property:Version=$projectNewVersion `
           --no-restore
@@ -92,7 +98,7 @@ jobs:
       - name: Run unit tests
         shell: pwsh
         run: |
-          dotnet test `
+          dotnet test Microsoft.IO.RecyclableMemoryStream.sln `
           --logger "trx;LogFileName=$fileBaseName.trx;verbosity=normal" `
           --results-directory 'Test results/' `
           --no-build
