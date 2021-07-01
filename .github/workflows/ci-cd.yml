@@ -62,6 +62,12 @@ jobs:
           default_bump: false
           release_branches: ${{ steps.data_gatherer.outputs.default_branch }}
 
+      - name: Clean solution and NuGet cache
+        shell: pwsh
+        run: |
+          dotnet clean Microsoft.IO.RecyclableMemoryStream.sln
+          dotnet nuget locals all --clear
+
       - name: Restore solution
         shell: pwsh
         run: |
