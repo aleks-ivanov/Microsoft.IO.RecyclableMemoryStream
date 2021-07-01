@@ -83,6 +83,7 @@ jobs:
           path: 'Build output/'
 
       - name: Run unit tests
+        continue-on-error: true
         shell: pwsh
         run: |
           dotnet test Microsoft.IO.RecyclableMemoryStream.sln `
