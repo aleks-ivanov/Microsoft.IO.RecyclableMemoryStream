@@ -100,6 +100,7 @@ jobs:
         run: |
           dotnet test Microsoft.IO.RecyclableMemoryStream.sln `
           --logger "trx;LogFileName=$fileBaseName.trx;verbosity=normal" `
+          --output 'Build output' `
           --results-directory 'Test results/' `
           --no-build
 
