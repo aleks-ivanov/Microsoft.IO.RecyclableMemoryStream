@@ -103,7 +103,7 @@ jobs:
           --include-symbols `
           --no-build `
           --output NuGet `
-          --version-suffix 1.2.3
+          -property:Version=1.2.3
 
       - name: Upload NuGet packages as pipeline artifact
         uses: actions/upload-artifact@v1
