@@ -71,6 +71,7 @@ jobs:
         shell: pwsh
         run: |
           dotnet build Microsoft.IO.RecyclableMemoryStream.sln `
+          --configuration Release `
           --output 'Build output' `
           --no-restore
 
@@ -84,6 +85,7 @@ jobs:
         shell: pwsh
         run: |
           dotnet test Microsoft.IO.RecyclableMemoryStream.sln `
+          --configuration Release `
           --logger "trx;LogFileName=$fileBaseName.trx;verbosity=normal" `
           --output 'Build output' `
           --results-directory 'Test results/' `
