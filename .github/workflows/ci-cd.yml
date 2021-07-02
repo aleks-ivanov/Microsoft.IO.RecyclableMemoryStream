@@ -88,7 +88,7 @@ jobs:
         run: |
           dotnet test Microsoft.IO.RecyclableMemoryStream.sln `
           --output 'Build output' `
-          --logger "trx;LogFileName=$fileBaseName.trx;verbosity=normal" `
+          --logger "trx;LogFileName=Microsoft.IO.RecyclableMemoryStream.trx;verbosity=normal" `
           --results-directory 'Test results/' `
           --no-build
 
@@ -104,11 +104,10 @@ jobs:
           msbuild Microsoft.IO.RecyclableMemoryStream.sln
         
           dotnet pack Microsoft.IO.RecyclableMemoryStream.sln `
-          --include-source `
           --include-symbols `
           --no-build `
           --output NuGet `
-          -property:Version=1.2.3
+          -property:PackageVersion='v1-test'
 
       - name: Upload NuGet packages as pipeline artifact
         uses: actions/upload-artifact@v1
