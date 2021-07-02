@@ -1,14 +1,23 @@
 name: CI/CD Pipeline
 
-on: [ push, pull_request, workflow_dispatch ]
+on:
+  push:
+    paths:
+      - 'src/**'
+      - 'UnitTests/**'
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'UnitTests/**'
+  workflow_dispatch:
 
-jobs: 
+jobs:
   ci:
     name: Continuous Integration
     runs-on: windows-latest
     outputs:
       latest_version: ${{ steps.tag_generator.outputs.new_version }}
-    steps:    
+    steps:
       - name: Data gatherer
         id: data_gatherer
         shell: pwsh
@@ -62,7 +71,7 @@ jobs:
         name: Bump GH tag
         id: tag_generator
         uses: mathieudutour/github-tag-action@v5.4
-        with:
+        with: 
           github_token: ${{ secrets.GITHUB_TOKEN }}
           default_bump: false
           release_branches: ${{ steps.data_gatherer.outputs.default_branch }}
@@ -73,7 +82,7 @@ jobs:
         run: |
           nuget restore Microsoft.IO.RecyclableMemoryStream.sln
 
-      - name: Build solution
+      - name: Build and pack solution
         shell: pwsh
         run: |
           $gitNewVersion = if ("${{ steps.tag_generator.outputs.new_version }}") {"${{ steps.tag_generator.outputs.new_version }}"} else {$null}
@@ -100,24 +109,24 @@ jobs:
           name: NuGet packages
           path: NuGet/
 
-      # - name: Run unit tests
-      #   continue-on-error: true
-      #   shell: pwsh
-      #   run: |
-      #     $date = Get-Date -Format "MM-dd-yyyy"
+      - name: Run unit tests
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          $date = Get-Date -Format "MM-dd-yyyy"
 
-      #     dotnet test Microsoft.IO.RecyclableMemoryStream.sln `
-      #     --output 'Build output' `
-      #     --logger "trx;LogFileName=Microsoft.IO.RecyclableMemoryStream-$date.trx;verbosity=normal" `
-      #     --results-directory 'Test results/' `
-      #     --no-build
+          dotnet test Microsoft.IO.RecyclableMemoryStream.sln `
+          --output 'Build output' `
+          --logger "trx;LogFileName=Microsoft.IO.RecyclableMemoryStream-$date.trx;verbosity=normal" `
+          --results-directory 'Test results/' `
+          --no-build
 
-      # - name: Upload test results as pipeline artifact
-      #   uses: actions/upload-artifact@v1
-      #   with:
-      #     name: Test results
-      #     path: 'Test results/'
-          
+      - name: Upload test results as pipeline artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: Test results
+          path: 'Test results/'
+
       - if: steps.tag_generator.outputs.new_version != ''
         name: Update version in project
         run: |
@@ -125,15 +134,15 @@ jobs:
           $projContent = Get-Content -Path $projFilePath -Raw
           $updatedProjContent = $projContent -replace '<PackageVersion>.*</PackageVersion>', "<PackageVersion>${{ steps.tag_generator.outputs.new_version }}</PackageVersion>"
           $updatedProjContent | Set-Content -Path $projFilePath
-          $userEmail = "github-actions@my.workflow"
-          $userName = "github-actions"
+          $userEmail = "ci-cd-pipeline@my.workflow"
+          $userName = "ci-cd-pipeline"
           $commitMessage = "update project version to ${{ steps.tag_generator.outputs.new_version }}"
           
           git config --global user.email $userEmail
           git config --global user.name $userName
           git add $projFilePath
           git commit -m $commitMessage
-          git push origin master
+          git push origin "${{ steps.data_gatherer.outputs.default_branch }}"
 
   cd:
     if: needs.ci.outputs.latest_version != ''
