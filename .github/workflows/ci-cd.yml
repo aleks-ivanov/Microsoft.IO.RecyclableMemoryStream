@@ -9,6 +9,10 @@ jobs:
     outputs:
       latest_version: ${{ steps.tag_generator.outputs.new_version }}
     steps:
+      - name: Get github actor
+        run: |
+          echo ${{ github.actor }}
+    
       - name: Data gatherer
         id: data_gatherer
         shell: pwsh
@@ -55,6 +59,8 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - if: steps.conditionals_handler.outputs.is_push_to_default_branch == 'true'
         name: Bump GH tag
@@ -114,6 +120,18 @@ jobs:
         with:
           name: Test results
           path: 'Test results/'
+          
+      - if: steps.tag_generator.outputs.new_version != ''
+        name: Update version in project
+        run: |
+          $projFilePath = src\Microsoft.IO.RecyclableMemoryStream.csproj
+          $projContent = Get-Content -Path $projFilePath -Raw
+          $updatedProjContent = $projContent -replace '<PackageVersion>.*</PackageVersion>', "<PackageVersion>${{ steps.tag_generator.outputs.new_version }}</PackageVersion>"
+          $updatedProjContent | Set-Content -Path $projFilePath
+          
+          git add $projFilePath
+          git commit -m "update project version"
+          git push origin master
 
   cd:
     if: needs.ci.outputs.latest_version != ''
