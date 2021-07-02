@@ -129,6 +129,8 @@ jobs:
           $updatedProjContent = $projContent -replace '<PackageVersion>.*</PackageVersion>', "<PackageVersion>${{ steps.tag_generator.outputs.new_version }}</PackageVersion>"
           $updatedProjContent | Set-Content -Path $projFilePath
           
+          git config --global user.email "test@test.com"
+          git config --global user.name "github-actions"
           git add $projFilePath
           git commit -m "update project version"
           git push origin master
