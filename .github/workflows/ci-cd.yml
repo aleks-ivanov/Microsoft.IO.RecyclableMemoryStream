@@ -5,7 +5,7 @@ on: [ push, pull_request, workflow_dispatch ]
 jobs:
   ci:
     name: Continuous Integration
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     outputs:
       latest_version: ${{ steps.tag_generator.outputs.new_version }}
     steps:
@@ -113,6 +113,43 @@ jobs:
       #     name: Test results
       #     path: 'Test results/'
 
+  cd:
+    if: needs.ci.outputs.latest_version != ''
+    name: Continuous Deployment
+    needs: ci
+    runs-on: ubuntu-latest
+    steps:
+      # GH CLI requires a cloned repo
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
+      - name: Download and extract NuGet packages artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: NuGet packages
+          path: NuGet/
+
+      - name: Push NuGet packages to NuGet.org
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          Get-ChildItem -Path NuGet/ -Filter *.nupkg | ForEach-Object {
+            nuget push $PSItem.FullName `
+            -ApiKey $env:NUGET_API_KEY `
+            -Source https://api.nuget.org/v3/index.json
+          }
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+
+      - name: Create and publish release
+        shell: pwsh
+        run: |
+          $releaseTag = "v${{ needs.ci.outputs.latest_version }}"
+          $releaseTitle = "OpenApi v${{ needs.ci.outputs.latest_version }}"
+          $releaseAssets = ''
+
+          gh release create $releaseTag -t $releaseTitle $releaseAssets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 # Built with ❤ by [Pipeline Foundation](https://pipeline.foundation)
