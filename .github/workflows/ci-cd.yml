@@ -104,6 +104,7 @@ jobs:
           msbuild Microsoft.IO.RecyclableMemoryStream.sln
         
           dotnet pack Microsoft.IO.RecyclableMemoryStream.sln `
+          --include-source `
           --include-symbols `
           --no-build `
           --output NuGet `
