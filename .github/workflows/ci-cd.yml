@@ -108,7 +108,7 @@ jobs:
           --include-symbols `
           --no-build `
           --output NuGet `
-          -property:PackageVersion='v1-test'
+          -property:PackageVersion=1.2.3
 
       - name: Upload NuGet packages as pipeline artifact
         uses: actions/upload-artifact@v1
