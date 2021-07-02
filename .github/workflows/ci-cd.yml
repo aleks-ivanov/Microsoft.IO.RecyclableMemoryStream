@@ -76,17 +76,25 @@ jobs:
           $gitNewVersion = if ("${{ steps.tag_generator.outputs.new_version }}") {"${{ steps.tag_generator.outputs.new_version }}"} else {$null}
           $projectCurrentVersion = [String](([xml](Get-Content -Path src\Microsoft.IO.RecyclableMemoryStream.csproj)).Project.PropertyGroup.PackageVersion) -replace '\s', ''
           $projectNewVersion = $gitNewVersion ?? $projectCurrentVersion
+          $nugetOuputPath = 'NuGet/'
 
           msbuild Microsoft.IO.RecyclableMemoryStream.sln `
           /p:OutputPath="${{ github.workspace }}/Build output" `
           /p:PackageVersion=$projectNewVersion `
-          -t:build,pack
+          /p:PackageOutputPath=$nugetOuputPath `
+          /t:build,pack
 
       - name: Upload build output as pipeline artifact
         uses: actions/upload-artifact@v1
         with:
           name: Build output
           path: 'Build output/'
+
+      - name: Upload NuGet packages as pipeline artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: NuGet packages
+          path: NuGet/
 
       # - name: Run unit tests
       #   continue-on-error: true
@@ -104,61 +112,6 @@ jobs:
       #     name: Test results
       #     path: 'Test results/'
 
-      - name: Pack solution
-        shell: pwsh
-        run: |
-          msbuild Microsoft.IO.RecyclableMemoryStream.sln
-        
-          dotnet pack Microsoft.IO.RecyclableMemoryStream.sln `
-          --include-source `
-          --include-symbols `
-          --no-build `
-          --output NuGet `
-          -property:PackageVersion=1.2.3
 
-      - name: Upload NuGet packages as pipeline artifact
-        uses: actions/upload-artifact@v1
-        with:
-          name: NuGet packages
-          path: NuGet/
-
-  cd:
-    if: needs.ci.outputs.latest_version != ''
-    name: Continuous Deployment
-    needs: ci
-    runs-on: ubuntu-latest
-    steps:
-      # GH CLI requires a cloned repo
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Download and extract NuGet packages artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: NuGet packages
-          path: NuGet/
-
-      - name: Push NuGet packages to NuGet.org
-        continue-on-error: true
-        shell: pwsh
-        run: |
-          Get-ChildItem -Path NuGet/ -Filter *.nupkg | ForEach-Object {
-            nuget push $PSItem.FullName `
-            -ApiKey $env:NUGET_API_KEY `
-            -Source https://api.nuget.org/v3/index.json
-          }
-        env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-
-      - name: Create and publish release
-        shell: pwsh
-        run: |
-          $releaseTag = "v${{ needs.ci.outputs.latest_version }}"
-          $releaseTitle = "OpenApi v${{ needs.ci.outputs.latest_version }}"
-          $releaseAssets = ''
-
-          gh release create $releaseTag -t $releaseTitle $releaseAssets
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 # Built with ❤ by [Pipeline Foundation](https://pipeline.foundation)
