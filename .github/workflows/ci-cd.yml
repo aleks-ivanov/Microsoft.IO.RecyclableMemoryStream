@@ -73,8 +73,14 @@ jobs:
       - name: Build solution
         shell: pwsh
         run: |
+          $gitNewVersion = if ("${{ steps.tag_generator.outputs.new_version }}") {"${{ steps.tag_generator.outputs.new_version }}"} else {$null}
+          $projectCurrentVersion = [String](([xml](Get-Content -Path src\Microsoft.IO.RecyclableMemoryStream.csproj)).Project.PropertyGroup.PackageVersion) -replace '\s', ''
+          $projectNewVersion = $gitNewVersion ?? $projectCurrentVersion
+
           msbuild Microsoft.IO.RecyclableMemoryStream.sln `
-          /p:OutputPath="${{ github.workspace }}/Build output"
+          /p:OutputPath="${{ github.workspace }}/Build output" `
+          /p:PackageVersion=$projectNewVersion `
+          -t:build,pack
 
       - name: Upload build output as pipeline artifact
         uses: actions/upload-artifact@v1
