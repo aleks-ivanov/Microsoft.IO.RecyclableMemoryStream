@@ -5,7 +5,7 @@ on: [ push, pull_request, workflow_dispatch ]
 jobs:
   ci:
     name: Continuous Integration
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     outputs:
       latest_version: ${{ steps.tag_generator.outputs.new_version }}
     steps:
@@ -50,8 +50,8 @@ jobs:
         with:
           dotnet-version: 5.0.203
           
-      # - name: Add msbuild to PATH
-      #   uses: microsoft/setup-msbuild@v1.0.2
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
 
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -144,9 +144,9 @@ jobs:
       - name: Create and publish release
         shell: pwsh
         run: |
-          $releaseTag = "v${{ needs.ci.outputs.latest_version }}"
-          $releaseTitle = "OpenApi v${{ needs.ci.outputs.latest_version }}"
-          $releaseAssets = ''
+          $releaseTag = "${{ needs.ci.outputs.latest_version }}"
+          $releaseTitle = "Microsoft.IO.RecyclableMemoryStream ${{ needs.ci.outputs.latest_version }}"
+          $releaseAssets = "NuGet/Microsoft.IO.RecyclableMemoryStream.${{ needs.ci.outputs.latest_version }}.nupkg"
 
           gh release create $releaseTag -t $releaseTitle $releaseAssets
         env:
