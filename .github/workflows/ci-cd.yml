@@ -8,11 +8,7 @@ jobs:
     runs-on: windows-latest
     outputs:
       latest_version: ${{ steps.tag_generator.outputs.new_version }}
-    steps:
-      - name: Get github actor
-        run: |
-          echo ${{ github.actor }}
-    
+    steps:    
       - name: Data gatherer
         id: data_gatherer
         shell: pwsh
@@ -129,11 +125,14 @@ jobs:
           $projContent = Get-Content -Path $projFilePath -Raw
           $updatedProjContent = $projContent -replace '<PackageVersion>.*</PackageVersion>', "<PackageVersion>${{ steps.tag_generator.outputs.new_version }}</PackageVersion>"
           $updatedProjContent | Set-Content -Path $projFilePath
+          $userEmail = "github-actions@my.workflow"
+          $userName = "github-actions"
+          $commitMessage = "update project version to ${{ steps.tag_generator.outputs.new_version }}"
           
-          git config --global user.email "test@test.com"
-          git config --global user.name "github-actions"
+          git config --global user.email $userEmail
+          git config --global user.name $userName
           git add $projFilePath
-          git commit -m "update project version"
+          git commit -m $commitMessage
           git push origin master
 
   cd:
