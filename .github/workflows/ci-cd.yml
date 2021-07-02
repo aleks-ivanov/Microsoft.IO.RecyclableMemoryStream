@@ -2,7 +2,7 @@ name: CI/CD Pipeline
 
 on: [ push, pull_request, workflow_dispatch ]
 
-jobs: 
+jobs:
   ci:
     name: Continuous Integration
     runs-on: windows-latest
@@ -133,11 +133,9 @@ jobs:
         continue-on-error: true
         shell: pwsh
         run: |
-          Get-ChildItem -Path NuGet/ -Filter *.nupkg | ForEach-Object {
-            nuget push $PSItem.FullName `
-            -ApiKey $env:NUGET_API_KEY `
-            -Source https://api.nuget.org/v3/index.json
-          }
+          nuget push NuGet/Microsoft.IO.RecyclableMemoryStream.${{ needs.ci.outputs.latest_version }}.nupkg `
+          -ApiKey $env:NUGET_API_KEY `
+          -Source https://api.nuget.org/v3/index.json
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
 
