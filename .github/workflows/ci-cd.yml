@@ -114,7 +114,7 @@ jobs:
         continue-on-error: true
         shell: pwsh
         run: |
-          $projectName = ${{ github.event.repository.name }}
+          $projectName = "${{ github.event.repository.name }}"
           $date = Get-Date -Format "MM-dd-yyyy"
 
           dotnet test Microsoft.IO.RecyclableMemoryStream.sln `
