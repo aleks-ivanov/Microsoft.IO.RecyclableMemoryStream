@@ -82,21 +82,21 @@ jobs:
           name: Build output
           path: 'Build output/'
 
-      - name: Run unit tests
-        continue-on-error: true
-        shell: pwsh
-        run: |
-          dotnet test Microsoft.IO.RecyclableMemoryStream.sln `
-          --output 'Build output' `
-          --logger "trx;LogFileName=Microsoft.IO.RecyclableMemoryStream.trx;verbosity=normal" `
-          --results-directory 'Test results/' `
-          --no-build
+      # - name: Run unit tests
+      #   continue-on-error: true
+      #   shell: pwsh
+      #   run: |
+      #     dotnet test Microsoft.IO.RecyclableMemoryStream.sln `
+      #     --output 'Build output' `
+      #     --logger "trx;LogFileName=Microsoft.IO.RecyclableMemoryStream.trx;verbosity=normal" `
+      #     --results-directory 'Test results/' `
+      #     --no-build
 
-      - name: Upload test results as pipeline artifact
-        uses: actions/upload-artifact@v1
-        with:
-          name: Test results
-          path: 'Test results/'
+      # - name: Upload test results as pipeline artifact
+      #   uses: actions/upload-artifact@v1
+      #   with:
+      #     name: Test results
+      #     path: 'Test results/'
 
       - name: Pack solution
         shell: pwsh
