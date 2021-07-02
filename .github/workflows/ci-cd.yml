@@ -50,8 +50,8 @@ jobs:
         with:
           dotnet-version: 5.0.203
           
-      - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.0.2
+      # - name: Add msbuild to PATH
+      #   uses: microsoft/setup-msbuild@v1.0.2
 
       - name: Checkout repository
         uses: actions/checkout@v2
