@@ -109,7 +109,8 @@ jobs:
         shell: pwsh
         run: |
           $gitNewVersion = if ( "${{ steps.tag_generator.outputs.new_version }}" ) { "${{ steps.tag_generator.outputs.new_version }}" } else { $null }
-          $projectCurrentVersion = [String]((git tag --list --sort=-committerdate)[0]) -replace ' ', ''
+          $gitTagsList = git for-each-ref --format '%(refname:short)' refs/tags/
+          $projectCurrentVersion = ($gitTagsList | Where-Object {$_ -notmatch 'v'} | Sort { [Version] $_ } -Descending)[0] -replace ' ', ''
           $projectNewVersion = $gitNewVersion ?? $projectCurrentVersion
 
           Write-Output "::set-output name=project_version::$(echo $projectNewVersion)"
