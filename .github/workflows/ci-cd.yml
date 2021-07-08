@@ -109,8 +109,12 @@ jobs:
         shell: pwsh
         run: |
           $gitNewVersion = if ( "${{ steps.tag_generator.outputs.new_version }}" ) { "${{ steps.tag_generator.outputs.new_version }}" } else { $null }
-          $gitTagsList = git for-each-ref --format '%(refname:short)' refs/tags/
-          $projectCurrentVersion = ($gitTagsList | Where-Object {$_ -notmatch 'v'} | Sort { [Version] $_ } -Descending)[0] -replace ' ', ''
+
+          # fetch all tags from remote
+          git fetch --all --tags
+
+          $gitTagsList = git tag
+          $projectCurrentVersion = ( $gitTagsList | Where-Object { $_ -notmatch 'v' } | Sort-Object { [Version] $_ } -Descending )[0] -replace ' ', ''
           $projectNewVersion = $gitNewVersion ?? $projectCurrentVersion
 
           Write-Output "::set-output name=project_version::$(echo $projectNewVersion)"
@@ -130,7 +134,6 @@ jobs:
             --configuration Release `
             --output "Publish outputs/$frameworkNum" `
             --framework $frameworkNum `
-            -property:PackageVersion=$projectVersion `
             --no-restore
           }
 
