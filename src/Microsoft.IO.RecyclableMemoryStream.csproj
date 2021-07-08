@@ -9,6 +9,7 @@
     <RepositoryType>git</RepositoryType>
     <IncludeBuildOutput>true</IncludeBuildOutput>
     <LangVersion>9.0</LangVersion>
+		<Version>$(VersionPrefix).$(VersionSuffix)</Version>
 		<!-- NuGet properties -->
     <PackageId>$(MSBuildProjectName)</PackageId>
     <PackageVersion>$(PackageVersion)</PackageVersion>
