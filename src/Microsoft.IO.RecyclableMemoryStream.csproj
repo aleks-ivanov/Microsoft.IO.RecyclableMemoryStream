@@ -5,20 +5,20 @@
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\Microsoft.IO.RecyclableMemoryStream.xml</DocumentationFile>
     <Title>$(MSBuildProjectName)</Title>
     <Authors>Microsoft</Authors>
+    <RepositoryUrl>https://github.com/Microsoft/Microsoft.IO.RecyclableMemoryStream</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <IncludeBuildOutput>true</IncludeBuildOutput>
+    <LangVersion>9.0</LangVersion>
+		<!-- NuGet properties -->
+    <PackageId>$(MSBuildProjectName)</PackageId>
+    <PackageVersion>$(PackageVersion)</PackageVersion>
+    <PackageProjectUrl>https://github.com/Microsoft/Microsoft.IO.RecyclableMemoryStream</PackageProjectUrl>
+    <PackageTags>MemoryStream;Memory;performance;GC;garbage collection;stream;scalable;buffer</PackageTags>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReleaseNotes>Additional framework targets, better .Net Core support, simplified build.</PackageReleaseNotes>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <PackageTags>MemoryStream;Memory;performance;GC;garbage collection;stream;scalable;buffer</PackageTags>
-    <RepositoryUrl>https://github.com/Microsoft/Microsoft.IO.RecyclableMemoryStream</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageProjectUrl>https://github.com/Microsoft/Microsoft.IO.RecyclableMemoryStream</PackageProjectUrl>
-    <IncludeBuildOutput>true</IncludeBuildOutput>
-    <LangVersion>9.0</LangVersion>
-		<!-- NuGet properties -->
-    <PackageId>$(MSBuildProjectName)</PackageId>
-    <PackageVersion>$(Version)</PackageVersion>
 		<!-- Assembly properties -->
 		<Company>Microsoft</Company>
 		<Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
