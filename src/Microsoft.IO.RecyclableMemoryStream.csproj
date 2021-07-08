@@ -12,7 +12,7 @@
 		<Version>$(VersionPrefix)</Version>
 		<!-- NuGet properties -->
     <PackageId>$(MSBuildProjectName)</PackageId>
-    <PackageVersion>$(PackageVersion)</PackageVersion>
+    <PackageVersion>$(Version)</PackageVersion>
     <PackageProjectUrl>https://github.com/Microsoft/Microsoft.IO.RecyclableMemoryStream</PackageProjectUrl>
     <PackageTags>MemoryStream;Memory;performance;GC;garbage collection;stream;scalable;buffer</PackageTags>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
