@@ -9,7 +9,7 @@
     <RepositoryType>git</RepositoryType>
     <IncludeBuildOutput>true</IncludeBuildOutput>
     <LangVersion>9.0</LangVersion>
-		<Version>$(VersionPrefix).$(VersionSuffix)</Version>
+		<Version>$(VersionPrefix)</Version>
 		<!-- NuGet properties -->
     <PackageId>$(MSBuildProjectName)</PackageId>
     <PackageVersion>$(PackageVersion)</PackageVersion>
@@ -26,7 +26,7 @@
 		<Description>A pooled MemoryStream allocator to decrease GC load and improve performance on highly scalable systems.</Description>
 		<Product>$(MSBuildProjectName)</Product>
 		<AssemblyTitle>$(MSBuildProjectName)</AssemblyTitle>
-		<AssemblyVersion>$(Version)</AssemblyVersion>
+		<AssemblyVersion>$(Version).$(VersionSuffix)</AssemblyVersion>
 		<ProjectGuid>{9ca0730b-3653-4fc4-b722-9e59fa70ea0b}</ProjectGuid>
   </PropertyGroup>
 
