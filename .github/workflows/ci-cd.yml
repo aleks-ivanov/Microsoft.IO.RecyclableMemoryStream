@@ -74,6 +74,21 @@ jobs:
           release_branches: ${{ steps.data_gatherer.outputs.default_branch }}
           tag_prefix: ''
 
+      - name: Version determiner
+        id: version_determiner
+        shell: pwsh
+        run: |
+          $gitNewVersion = if ( "${{ steps.tag_generator.outputs.new_version }}" ) { "${{ steps.tag_generator.outputs.new_version }}" } else { $null }
+
+          # fetch all tags from remote
+          git fetch --all --tags
+
+          $gitTagsList = git tag
+          $projectCurrentVersion = ( $gitTagsList | Where-Object { $_ -notmatch 'v' } | Sort-Object { [Version] $_ } -Descending )[0] -replace ' ', ''
+          $projectNewVersion = $gitNewVersion ?? $projectCurrentVersion
+
+          Write-Output "::set-output name=project_version::$(echo $projectNewVersion)"
+
       - name: Restore solution
         shell: pwsh
         run: |
@@ -82,8 +97,12 @@ jobs:
       - name: Build solution
         shell: pwsh
         run: |
+          $projectVersion = "${{ steps.version_determiner.outputs.project_version }}"
+          
           dotnet build Microsoft.IO.RecyclableMemoryStream.sln `
           --configuration Release `
+          -property:VersionPrefix=$projectVersion `
+          -property:VersionSuffix=${{ github.run_number }} `
           --no-restore
 
       - name: Run unit tests
@@ -103,21 +122,6 @@ jobs:
         with:
           name: Test results
           path: 'Test results/'
-
-      - name: Version determiner
-        id: version_determiner
-        shell: pwsh
-        run: |
-          $gitNewVersion = if ( "${{ steps.tag_generator.outputs.new_version }}" ) { "${{ steps.tag_generator.outputs.new_version }}" } else { $null }
-
-          # fetch all tags from remote
-          git fetch --all --tags
-
-          $gitTagsList = git tag
-          $projectCurrentVersion = ( $gitTagsList | Where-Object { $_ -notmatch 'v' } | Sort-Object { [Version] $_ } -Descending )[0] -replace ' ', ''
-          $projectNewVersion = $gitNewVersion ?? $projectCurrentVersion
-
-          Write-Output "::set-output name=project_version::$(echo $projectNewVersion)"
 
       - name: Publish project for each target framework
         shell: pwsh
