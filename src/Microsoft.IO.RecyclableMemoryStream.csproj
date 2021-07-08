@@ -23,8 +23,6 @@
 		<Company>Microsoft</Company>
 		<Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
 		<Description>A pooled MemoryStream allocator to decrease GC load and improve performance on highly scalable systems.</Description>
-		<FileVersion>$(Version)</FileVersion>
-		<InformationalVersion>$(Version)</InformationalVersion>
 		<Product>$(MSBuildProjectName)</Product>
 		<AssemblyTitle>$(MSBuildProjectName)</AssemblyTitle>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
