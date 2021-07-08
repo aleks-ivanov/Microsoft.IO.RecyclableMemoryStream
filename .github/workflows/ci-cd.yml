@@ -85,7 +85,9 @@ jobs:
           dotnet pack Microsoft.IO.RecyclableMemoryStream.sln `
           --configuration Release `
           --output NuGet `
-          -property:Version=$projectVersion `
+          -property:PackageVersion=$projectVersion `
+          -property:VersionPrefix=$projectVersion `
+          -property:VersionSuffix=${{ github.run_number }} `
           --no-restore
 
       - name: Upload NuGet packages as pipeline artifact
