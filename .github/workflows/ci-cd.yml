@@ -2,13 +2,6 @@ name: CI/CD Pipeline
 
 on:
   push:
-    paths:
-      - 'src/**'
-      - 'UnitTests/**'
-  pull_request:
-    paths:
-      - 'src/**'
-      - 'UnitTests/**'
   workflow_dispatch:
 
 jobs:
