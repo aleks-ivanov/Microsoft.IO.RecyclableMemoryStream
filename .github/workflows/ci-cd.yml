@@ -2,13 +2,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    paths:
-      - 'src/**'
-      - 'UnitTests/**'
   pull_request:
-    paths:
-      - 'src/**'
-      - 'UnitTests/**'
   workflow_dispatch:
 
 jobs:
@@ -102,6 +96,9 @@ jobs:
           dotnet pack Microsoft.IO.RecyclableMemoryStream.sln `
           --configuration Release `
           --output NuGet `
+          -property:VersionPrefix=$projectVersion `
+          -property:VersionSuffix=${{ github.run_number }} `
+          -property:GITHUB_ACTIONS=true `
           --no-restore
 
       - name: Upload NuGet packages as pipeline artifact
