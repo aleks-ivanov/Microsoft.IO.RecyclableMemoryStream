@@ -190,12 +190,29 @@ jobs:
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
 
+      - name: Download and extract assemblies artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: Publish outputs
+          path: 'Publish outputs/'
+
+      - name: Archive assemblies for release
+        shell: pwsh
+        run: |
+          # Install or update 7z
+          sudo apt update
+          sudo apt install p7zip-full p7zip-rar
+
+          # Archive assemblies
+          cd './Publish outputs'
+          7z a '${{ github.workspace }}/Microsoft.IO.RecyclableMemoryStream ${{ needs.ci.outputs.latest_version }} assemblies.7z' .
+
       - name: Create and publish release
         shell: pwsh
         run: |
           $releaseTag = "${{ needs.ci.outputs.latest_version }}"
           $releaseTitle = "Microsoft.IO.RecyclableMemoryStream ${{ needs.ci.outputs.latest_version }}"
-          $releaseAssets = "NuGet/Microsoft.IO.RecyclableMemoryStream.${{ needs.ci.outputs.latest_version }}.nupkg", "NuGet/Microsoft.IO.RecyclableMemoryStream.${{ needs.ci.outputs.latest_version }}.snupkg"
+          $releaseAssets = "NuGet/Microsoft.IO.RecyclableMemoryStream.${{ needs.ci.outputs.latest_version }}.nupkg", "NuGet/Microsoft.IO.RecyclableMemoryStream.${{ needs.ci.outputs.latest_version }}.snupkg", "Microsoft.IO.RecyclableMemoryStream ${{ needs.ci.outputs.latest_version }} assemblies.7z"
 
           gh release create $releaseTag -t $releaseTitle $releaseAssets
         env:
