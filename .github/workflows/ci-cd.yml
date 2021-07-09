@@ -96,10 +96,12 @@ jobs:
           dotnet pack Microsoft.IO.RecyclableMemoryStream.sln `
           --configuration Release `
           --output NuGet `
+          --include-symbols `
+          --no-restore `
           -property:VersionPrefix=$projectVersion `
           -property:VersionSuffix=${{ github.run_number }} `
           -property:GITHUB_ACTIONS=true `
-          --no-restore
+          -property:SignedBuild=true
 
       - name: Upload NuGet packages as pipeline artifact
         uses: actions/upload-artifact@v2
