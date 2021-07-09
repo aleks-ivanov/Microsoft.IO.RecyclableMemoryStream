@@ -95,8 +95,6 @@ jobs:
 
           dotnet build Microsoft.IO.RecyclableMemoryStream.sln `
           --configuration Release `
-          -property:VersionPrefix=$projectVersion `
-          -property:VersionSuffix=${{ github.run_number }} `
           --no-restore
 
       - name: Run unit tests
