@@ -223,9 +223,10 @@ jobs:
         run: |
           $releaseTag = "${{ needs.ci.outputs.latest_version }}"
           $releaseTitle = "Microsoft.IO.RecyclableMemoryStream ${{ needs.ci.outputs.latest_version }}"
+          $releaseNotes = "NuGet: [Microsoft.IO.RecyclableMemoryStream ${{ needs.ci.outputs.latest_version }}](https://www.nuget.org/packages/Microsoft.IO.RecyclableMemoryStream/${{ needs.ci.outputs.latest_version }})"
           $releaseAssets = "NuGet/Microsoft.IO.RecyclableMemoryStream.${{ needs.ci.outputs.latest_version }}.nupkg", "NuGet/Microsoft.IO.RecyclableMemoryStream.${{ needs.ci.outputs.latest_version }}.snupkg", "Microsoft.IO.RecyclableMemoryStream ${{ needs.ci.outputs.latest_version }} Assemblies.7z"
 
-          gh release create $releaseTag -t $releaseTitle $releaseAssets
+          gh release create $releaseTag -t $releaseTitle -n $releaseNotes $releaseAssets
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
