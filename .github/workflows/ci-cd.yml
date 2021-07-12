@@ -180,7 +180,7 @@ jobs:
 
       # Tooling setup
 
-      - name: Setup .NET SDK
+      - name: Install .NET SDK
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 5.0.203
@@ -233,7 +233,10 @@ jobs:
           $releaseNotes = "NuGet: [Microsoft.IO.RecyclableMemoryStream ${{ needs.ci.outputs.latest_version }}](https://www.nuget.org/packages/Microsoft.IO.RecyclableMemoryStream/${{ needs.ci.outputs.latest_version }})"
           $releaseAssets = "NuGet/Microsoft.IO.RecyclableMemoryStream.${{ needs.ci.outputs.latest_version }}.nupkg", "NuGet/Microsoft.IO.RecyclableMemoryStream.${{ needs.ci.outputs.latest_version }}.snupkg", "Microsoft.IO.RecyclableMemoryStream ${{ needs.ci.outputs.latest_version }} Assemblies.7z"
 
-          gh release create $releaseTag -t $releaseTitle -n $releaseNotes $releaseAssets
+          gh release create $releaseTag `
+          --title $releaseTitle `
+          --notes $releaseNotes `
+          $releaseAssets
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
