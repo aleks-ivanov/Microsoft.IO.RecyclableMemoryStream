@@ -10,7 +10,6 @@ pool:
 
 variables:
   projectName: 'Microsoft.IO.RecyclableMemoryStream'
-  date: $(Date:yyyyMMdd)
   solution: 'Microsoft.IO.RecyclableMemoryStream.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
@@ -48,7 +47,7 @@ stages:
             inputs:
               command: 'test'
               projects: '$(solution)'
-              arguments: '--configuration Release --logger "trx;LogFileName=$(projectName)-$(date).trx;verbosity=normal" --results-directory "Test results/" --no-build'
+              arguments: '--configuration Release --logger "trx;LogFileName=$(projectName)-$(Date:yyyyMMdd).trx;verbosity=normal" --results-directory "Test results/" --no-build'
               publishTestResults: false
 
           - pwsh: |
