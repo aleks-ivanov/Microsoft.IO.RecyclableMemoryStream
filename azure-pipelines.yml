@@ -9,6 +9,8 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
+  projectName: 'Microsoft.IO.RecyclableMemoryStream'
+  date: $(Date:yyyyMMdd)
   solution: 'Microsoft.IO.RecyclableMemoryStream.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
@@ -42,3 +44,10 @@ stages:
               command: 'build'
               projects: '$(solution)'
               arguments: '--configuration Release --no-restore'
+
+          - task: DotNetCoreCLI@2
+            inputs:
+              command: 'test'
+              projects: '$(solution)'
+              arguments: '--configuration Release --logger "trx;LogFileName=$(projectName)-$(date).trx;verbosity=normal" --results-directory "Test results/" --no-build'
+              publishTestResults: false
