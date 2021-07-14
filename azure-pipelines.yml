@@ -24,8 +24,7 @@ stages:
         steps:
           - pwsh: |
               git checkout feature/docs-2
-              get-childitem
-            displayName: Test script
+            displayName: Checkout correct branch
 
           - task: UseDotNet@2
             displayName: 'Use .NET Core SDK'
@@ -51,3 +50,9 @@ stages:
               projects: '$(solution)'
               arguments: '--configuration Release --logger "trx;LogFileName=$(projectName)-$(date).trx;verbosity=normal" --results-directory "Test results/" --no-build'
               publishTestResults: false
+
+          - task: PublishPipelineArtifact@1
+            inputs:
+              targetPath: '$(Pipeline.Workspace)/Test results/'
+              artifact: 'Test results'
+              publishLocation: 'pipeline'
