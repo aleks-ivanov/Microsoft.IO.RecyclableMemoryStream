@@ -20,7 +20,9 @@ stages:
       - job: data_gathering
         displayName: Data gathering
         steps:
-          - pwsh: get-childitem
+          - pwsh: |
+              git checkout feature/docs-2
+              get-childitem
             displayName: Test script
 
           # - task: UseDotNet@2
