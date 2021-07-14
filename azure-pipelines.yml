@@ -51,8 +51,12 @@ stages:
               arguments: '--configuration Release --logger "trx;LogFileName=$(projectName)-$(date).trx;verbosity=normal" --results-directory "Test results/" --no-build'
               publishTestResults: false
 
+          - pwsh: |
+              get-childitem
+            displayName: Check files
+
           - task: PublishPipelineArtifact@1
             inputs:
-              targetPath: '$(Pipeline.Workspace)/Test results/'
+              targetPath: 'Test results/'
               artifact: 'Test results'
               publishLocation: 'pipeline'
