@@ -47,7 +47,7 @@ stages:
             inputs:
               command: 'test'
               projects: '$(solution)'
-              arguments: '--configuration Release --logger "trx;LogFileName=$(projectName)-$(Date:yyyyMMdd).trx;verbosity=normal" --results-directory "Test results/" --no-build'
+              arguments: '--configuration Release --logger trx;LogFileName=$(projectName)-$(Date:yyyyMMdd).trx;verbosity=normal --results-directory "Test results/" --no-build'
               publishTestResults: false
 
           - pwsh: |
