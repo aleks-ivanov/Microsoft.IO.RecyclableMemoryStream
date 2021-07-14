@@ -1,0 +1,24 @@
+name: CI/CD Pipeline
+
+trigger:
+- main
+pr:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  solution: 'Microsoft.IO.RecyclableMemoryStream.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+stages:
+  - stage: ci
+    displayName: Continuous Integration
+    jobs:
+      - job: data_gathering
+        displayName: Data gathering
+        steps:
+          - pwsh: Write-Output 'Test string'
+            displayName: Test script
