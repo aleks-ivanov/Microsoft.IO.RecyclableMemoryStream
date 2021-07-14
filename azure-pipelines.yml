@@ -17,17 +17,28 @@ stages:
   - stage: ci
     displayName: Continuous Integration
     jobs:
-      - job: data_gathering
-        displayName: Data gathering
+      - job: build_validation
+        displayName: Build validation
         steps:
           - pwsh: |
               git checkout feature/docs-2
               get-childitem
             displayName: Test script
 
-          # - task: UseDotNet@2
-          #   displayName: 'Use .NET Core SDK'
-          #   inputs:
-          #     packageType: sdk
-          #     version: 5.0.203
-          #     installationPath: $(Agent.ToolsDirectory)/dotnet
+          - task: UseDotNet@2
+            displayName: 'Use .NET Core SDK'
+            inputs:
+              packageType: sdk
+              version: 5.0.203
+              installationPath: $(Agent.ToolsDirectory)/dotnet
+
+          - task: DotNetCoreCLI@2
+            inputs:
+              command: 'restore'
+              projects: '$(solution)'
+
+          - task: DotNetCoreCLI@2
+            inputs:
+              command: 'build'
+              projects: '$(solution)'
+              arguments: '--configuration Release --no-restore'
