@@ -20,5 +20,12 @@ stages:
       - job: data_gathering
         displayName: Data gathering
         steps:
-          - pwsh: Write-Output 'Test string'
+          - pwsh: get-childitem
             displayName: Test script
+
+          # - task: UseDotNet@2
+          #   displayName: 'Use .NET Core SDK'
+          #   inputs:
+          #     packageType: sdk
+          #     version: 5.0.203
+          #     installationPath: $(Agent.ToolsDirectory)/dotnet
