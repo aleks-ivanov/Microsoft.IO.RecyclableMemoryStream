@@ -87,7 +87,6 @@ stages:
               -property:VersionPrefix=$(VersionDeterminer.ProjectVersion) `
               -property:VersionSuffix=$(Build.BuildId) `
               -property:TF_BUILD=true `
-              # -property:SignedBuild=true `
               --no-restore
             displayName: 'Build solution'
 
