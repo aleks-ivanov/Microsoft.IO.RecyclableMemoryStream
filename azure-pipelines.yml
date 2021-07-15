@@ -75,12 +75,6 @@ stages:
 
           # Build validation and testing
 
-          - pwsh: |
-              Write-Host "$(Build.BinariesDirectory)/Assemblies/"
-              Write-Host "$(Build.ArtifactStagingDirectory)/Assemblies/"
-              Write-Host "$(Build.ArtifactStagingDirectory)/Test results/"
-            displayName: Check script
-
           - task: DotNetCoreCLI@2
             displayName: 'Restore solution'
             inputs:
@@ -112,14 +106,17 @@ stages:
               publishTestResults: false
 
           - pwsh: |
-              Write-Host "$(Build.BinariesDirectory)/Assemblies/"
-              Write-Host "$(Build.ArtifactStagingDirectory)/Assemblies/"
-              Write-Host "$(Build.ArtifactStagingDirectory)/Test results/"
-
-              Copy-Item -Path src/bin/Debug/** -Recurse -Destination "$(Build.BinariesDirectory)/Assemblies/"
-              Copy-Item -Path src/bin/Debug/** -Recurse -Destination "$(Build.ArtifactStagingDirectory)/Assemblies/"
-              Copy-Item -Path $(Common.TestResultsDirectory)/** -Recurse -Destination "$(Build.ArtifactStagingDirectory)/Test results/"
+              Copy-Item -Path src/bin/Debug -Recurse -Destination "$(Build.BinariesDirectory)/Assemblies/"
+              Copy-Item -Path src/bin/Debug -Recurse -Destination "$(Build.ArtifactStagingDirectory)/Assemblies/"
+              Copy-Item -Path $(Common.TestResultsDirectory) -Recurse -Destination "$(Build.ArtifactStagingDirectory)/Test results/"
             displayName: Move build and test artifacts to binaries and staging dirs
+
+          - task: CopyFiles@2
+            displayName: Move build and test artifacts to binaries and staging dirs
+            inputs:
+              #sourceFolder: # Optional
+              #contents: '**' 
+              targetFolder: 
 
           # Package generation
 
