@@ -68,6 +68,11 @@ stages:
             displayName: Version determiner
             name: VersionDeterminer
 
+          - pwsh: |
+              Write-Host $(DataGatherer.DefaultBranch)
+              Write-Host $(VersionDeterminer.ProjectVersion)
+            displayName: Check data
+
           # Build validation and testing
 
           - task: DotNetCoreCLI@2
@@ -76,12 +81,22 @@ stages:
               command: 'restore'
               projects: '$(solution)'
 
-          - task: DotNetCoreCLI@2
+          - pwsh: |
+              dotnet build $(solution) `
+              --configuration Debug `
+              -property:VersionPrefix=$(VersionDeterminer.ProjectVersion) `
+              -property:VersionSuffix=$(Build.BuildId) `
+              -property:GITHUB_ACTIONS=true `
+              -property:SignedBuild=true `
+              --no-restore
             displayName: 'Build solution'
-            inputs:
-              command: 'build'
-              projects: '$(solution)'
-              arguments: '--configuration Debug -property:VersionPrefix=$(VersionDeterminer.ProjectVersion) -property:VersionSuffix=$(Build.BuildId) -property:GITHUB_ACTIONS=true -property:SignedBuild=true --no-restore'
+
+          # - task: DotNetCoreCLI@2
+          #   displayName: 'Build solution'
+          #   inputs:
+          #     command: 'build'
+          #     projects: '$(solution)'
+          #     arguments: '--configuration Debug -property:VersionPrefix=$(VersionDeterminer.ProjectVersion) -property:VersionSuffix=$(Build.BuildId) -property:GITHUB_ACTIONS=true -property:SignedBuild=true --no-restore'
 
           - task: DotNetCoreCLI@2
             displayName: 'Run unit tests'
