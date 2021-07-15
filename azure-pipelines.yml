@@ -82,8 +82,8 @@ stages:
               projects: '$(solution)'
 
           - pwsh: |
-              $projectVersion = $(VersionDeterminer.ProjectVersion)
-              $buildNumber = $(Build.BuildId)
+              $projectVersion = "$(VersionDeterminer.ProjectVersion)"
+              $buildNumber = "$(Build.BuildId)"
 
               dotnet build $(solution) `
               --configuration Debug `
