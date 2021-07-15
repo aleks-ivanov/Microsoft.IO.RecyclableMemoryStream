@@ -14,6 +14,27 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
+# Stage CI
+## Jobs
+### Job: build, test and artifact generation
+#### pwsh: Data gatherer
+#### pwsh: Conditionals handler
+#### pwsh: Tag generator
+#### pwsh: Project version determiner
+#### task: restore
+#### task: build Debug
+#### task: copy bin to b/ and a/
+#### task: upload assemblies
+#### task: test
+#### task: upload test results
+#### task: pack Release (no-build)
+#### task: upload package
+
+# Stage CD
+## Jobs
+### Job: Package Deployment
+### Job: GitHub Release
+
 stages:
   - stage: ci
     displayName: Continuous Integration
