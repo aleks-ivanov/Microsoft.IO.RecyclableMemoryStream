@@ -111,13 +111,6 @@ stages:
               Copy-Item -Path $(Common.TestResultsDirectory) -Recurse -Destination "$(Build.ArtifactStagingDirectory)/Test results/"
             displayName: Move build and test artifacts to binaries and staging dirs
 
-          - task: CopyFiles@2
-            displayName: Move build and test artifacts to binaries and staging dirs
-            inputs:
-              #sourceFolder: # Optional
-              #contents: '**' 
-              targetFolder: 
-
           # Package generation
 
           - task: DotNetCoreCLI@2
