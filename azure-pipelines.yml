@@ -111,12 +111,26 @@ stages:
 
           # Package generation
 
-          - task: DotNetCoreCLI@2
+          - pwsh: |
+              $projectVersion = "$(VersionDeterminer.ProjectVersion)"
+              $buildNumber = "$(Build.BuildId)"
+
+              dotnet pack $(solution) `
+              --configuration Release `
+              --output "$(Build.ArtifactStagingDirectory)/NuGet packages/" `
+              -property:VersionPrefix=$projectVersion `
+              -property:VersionSuffix=$buildNumber `
+              -property:TF_BUILD=true `
+              -property:SignedBuild=true `
+              --no-restore
             displayName: 'Pack solution'
-            inputs:
-              command: 'pack'
-              projects: '$(solution)'
-              arguments: '--configuration Release --output "$(Build.ArtifactStagingDirectory)/NuGet packages/" -property:VersionPrefix="$(VersionDeterminer.ProjectVersion)" -property:VersionSuffix="$(Build.BuildId)" -property:GITHUB_ACTIONS=true -property:SignedBuild=true --no-restore'
+
+          # - task: DotNetCoreCLI@2
+          #   displayName: 'Pack solution'
+          #   inputs:
+          #     command: 'pack'
+          #     projects: '$(solution)'
+          #     arguments: '--configuration Release --output "$(Build.ArtifactStagingDirectory)/NuGet packages/" -property:VersionPrefix="$(VersionDeterminer.ProjectVersion)" -property:VersionSuffix="$(Build.BuildId)" -property:GITHUB_ACTIONS=true -property:SignedBuild=true --no-restore'
 
           # Artifact upload
 
