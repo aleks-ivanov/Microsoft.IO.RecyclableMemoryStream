@@ -4,11 +4,6 @@ trigger:
 - master
 pr:
 - master
-resources:
- repositories:
-   - repository: Fork
-     type: git
-     name: test-project_aleks
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -32,7 +27,7 @@ variables:
 #### task: upload assemblies
 #### task: test
 #### task: upload test results
-#### task: pack Release (no-build)
+#### task: pack Release
 #### task: upload package
 
 # Stage CD
