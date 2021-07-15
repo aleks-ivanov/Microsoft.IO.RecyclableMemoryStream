@@ -1,9 +1,9 @@
 name: CI/CD Pipeline
 
 trigger:
-- main
+- master
 pr:
-- main
+- master
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -21,10 +21,6 @@ stages:
       - job: build_validation
         displayName: Build validation
         steps:
-          - pwsh: |
-              git checkout feature/docs-2
-            displayName: Checkout correct branch
-
           - task: UseDotNet@2
             displayName: 'Use .NET Core SDK'
             inputs:
