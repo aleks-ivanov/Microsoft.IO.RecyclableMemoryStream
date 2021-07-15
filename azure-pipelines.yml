@@ -5,14 +5,9 @@ trigger:
 pr:
 - master
 
-pool:
-  vmImage: 'ubuntu-latest'
-
 variables:
   projectName: 'Microsoft.IO.RecyclableMemoryStream'
   solution: 'Microsoft.IO.RecyclableMemoryStream.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
 
 # Stage CI
 ## Jobs
@@ -38,10 +33,14 @@ variables:
 stages:
   - stage: ci
     displayName: Continuous Integration
+    pool:
+      vmImage: 'ubuntu-latest'
     jobs:
-      - job: build_validation
-        displayName: Build validation
+      - job: build_test_artifact_generation
+        displayName: Build, test and artifact generation
         steps:
+          # Tooling setup
+
           - task: UseDotNet@2
             displayName: 'Use .NET Core SDK'
             inputs:
@@ -49,30 +48,35 @@ stages:
               version: 5.0.203
               installationPath: $(Agent.ToolsDirectory)/dotnet
 
+          # Information setup
+
+          - pwsh: |
+              echo $(Build.Repository)
+            displayName: Build.Repository
+
+          # Build validation and testing
+
           - task: DotNetCoreCLI@2
+            displayName: 'Run restore'
             inputs:
               command: 'restore'
               projects: '$(solution)'
 
           - task: DotNetCoreCLI@2
+            displayName: 'Run build'
             inputs:
               command: 'build'
               projects: '$(solution)'
-              arguments: '--configuration Release --no-restore'
+              arguments: '--configuration Debug --no-restore'
 
           - task: DotNetCoreCLI@2
+            displayName: 'Run unit tests'
             inputs:
               command: 'test'
               projects: '$(solution)'
-              arguments: '--configuration Release --logger trx;LogFileName=$(projectName)-$(Date:yyyyMMdd).trx;verbosity=normal --results-directory "Test results/" --no-build'
-              publishTestResults: false
+              arguments: '--configuration Debug --logger trx;LogFileName=$(projectName)-$(Date:yyyyMMdd).trx;verbosity=normal --results-directory "Test results/" --no-build'
+              publishTestResults: true
 
-          - pwsh: |
-              get-childitem
-            displayName: Check files
+          # Package generation
 
-          - task: PublishPipelineArtifact@1
-            inputs:
-              targetPath: 'Test results/'
-              artifact: 'Test results'
-              publishLocation: 'pipeline'
+          # Artifact upload
