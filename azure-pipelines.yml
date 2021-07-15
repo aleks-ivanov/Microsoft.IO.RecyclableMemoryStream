@@ -82,10 +82,13 @@ stages:
               projects: '$(solution)'
 
           - pwsh: |
+              $projectVersion = $(VersionDeterminer.ProjectVersion)
+              $buildNumber = $(Build.BuildId)
+
               dotnet build $(solution) `
               --configuration Debug `
-              -property:VersionPrefix=$(VersionDeterminer.ProjectVersion) `
-              -property:VersionSuffix=$(Build.BuildId) `
+              -property:VersionPrefix=$projectVersion `
+              -property:VersionSuffix=$buildNumber `
               -property:TF_BUILD=true `
               --no-restore
             displayName: 'Build solution'
@@ -97,13 +100,13 @@ stages:
           #     projects: '$(solution)'
           #     arguments: '--configuration Debug -property:VersionPrefix=$(VersionDeterminer.ProjectVersion) -property:VersionSuffix=$(Build.BuildId) -property:GITHUB_ACTIONS=true -property:SignedBuild=true --no-restore'
 
-          - task: DotNetCoreCLI@2
-            displayName: 'Run unit tests'
-            inputs:
-              command: 'test'
-              projects: '$(solution)'
-              arguments: '--configuration Debug --logger trx;LogFilePath=$(Common.TestResultsDirectory)/$(projectName).trx;verbosity=normal --results-directory "$(Common.TestResultsDirectory)/" --no-build'
-              publishTestResults: false
+          # - task: DotNetCoreCLI@2
+          #   displayName: 'Run unit tests'
+          #   inputs:
+          #     command: 'test'
+          #     projects: '$(solution)'
+          #     arguments: '--configuration Debug --logger trx;LogFilePath=$(Common.TestResultsDirectory)/$(projectName).trx;verbosity=normal --results-directory "$(Common.TestResultsDirectory)/" --no-build'
+          #     publishTestResults: false
 
           - pwsh: |
               Copy-Item -Path src/bin/Debug -Recurse -Destination "$(Build.BinariesDirectory)/Assemblies/"
