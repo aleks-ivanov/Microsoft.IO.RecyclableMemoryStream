@@ -55,14 +55,9 @@ stages:
               $repo = "$(Build.Repository.Name)"
               $defaultBranch = Invoke-RestMethod -Method GET -Uri https://api.github.com/repos/$repo | Select-Object -ExpandProperty default_branch
 
-              Write-Host $defaultBranch
-
               Write-Host "##vso[task.setvariable variable=default_branch;isOutput=true]$defaultBranch"
             displayName: Data gatherer
             name: data_gatherer
-
-          - pwsh: |
-              Write-Host $(data_gatherer.default_branch)
 
           # Build validation and testing
 
@@ -84,7 +79,7 @@ stages:
             inputs:
               command: 'test'
               projects: '$(solution)'
-              arguments: '--configuration Debug --logger trx;LogFileName=$(projectName).trx;verbosity=normal --results-directory "Test results/" --no-build'
+              arguments: '--configuration Debug --logger trx;LogFilePath=$(Common.TestResultsDirectory)/$(projectName).trx;verbosity=normal --results-directory "$(Common.TestResultsDirectory)/" --no-build'
               publishTestResults: false
 
           # Package generation
