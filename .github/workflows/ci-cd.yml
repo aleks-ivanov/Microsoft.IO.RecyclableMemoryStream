@@ -97,7 +97,7 @@ jobs:
           $projectVersion = "${{ steps.version_determiner.outputs.project_version }}"
 
           dotnet build Microsoft.IO.RecyclableMemoryStream.sln `
-          --configuration Debug `
+          --configuration Release `
           -property:VersionPrefix=$projectVersion `
           -property:VersionSuffix=${{ github.run_number }} `
           -property:GITHUB_ACTIONS=true `
