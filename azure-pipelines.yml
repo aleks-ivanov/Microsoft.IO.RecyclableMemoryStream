@@ -51,7 +51,8 @@ stages:
           # Information setup
 
           - pwsh: |
-              echo $(Build.Repository)
+              echo $(Build.Repository.Name)
+              echo $(Build.Repository.Uri)
             displayName: Build.Repository
 
           # Build validation and testing
