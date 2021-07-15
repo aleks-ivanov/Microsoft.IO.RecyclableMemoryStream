@@ -57,7 +57,7 @@ stages:
 
               Write-Host $defaultBranch
 
-              Write-Host '##vso[task.setvariable variable=default_branch;isOutput=true]$defaultBranch'
+              Write-Host "##vso[task.setvariable variable=default_branch;isOutput=true]$defaultBranch"
             displayName: Data gatherer
             name: data_gatherer
 
