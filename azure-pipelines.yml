@@ -55,6 +55,8 @@ stages:
               $repo = "$(Build.Repository.Name)"
               $defaultBranch = Invoke-RestMethod -Method GET -Uri https://api.github.com/repos/$repo | Select-Object -ExpandProperty default_branch
 
+              Write-Host $defaultBranch
+
               Write-Host '##vso[task.setvariable variable=default_branch;isOutput=true]$defaultBranch'
             displayName: Data gatherer
             name: data_gatherer
