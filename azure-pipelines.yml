@@ -4,6 +4,11 @@ trigger:
 - master
 pr:
 - master
+resources:
+ repositories:
+   - repository: Fork
+     type: git
+     name: test-project_aleks
 
 pool:
   vmImage: 'ubuntu-latest'
