@@ -86,8 +86,8 @@ stages:
               --configuration Debug `
               -property:VersionPrefix=$(VersionDeterminer.ProjectVersion) `
               -property:VersionSuffix=$(Build.BuildId) `
-              -property:GITHUB_ACTIONS=true `
-              -property:SignedBuild=true `
+              -property:TF_BUILD=true `
+              # -property:SignedBuild=true `
               --no-restore
             displayName: 'Build solution'
 
